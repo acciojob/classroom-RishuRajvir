@@ -2,57 +2,67 @@ package com.driver;
 
 import java.util.*;
 
-import org.springframework.stereotype.Repository;
-
-@Repository
 public class StudentRepository {
 
-    private HashMap<String, Student> studentMap;
-    private HashMap<String, Teacher> teacherMap;
-    private HashMap<String, List<String>> teacherStudentMapping;
+    Map<String,Student> studentData=new HashMap<>();
+    Map<String,Teacher> teacherData=new HashMap<>();
 
-    public StudentRepository(){
-        this.studentMap = new HashMap<String, Student>();
-        this.teacherMap = new HashMap<String, Teacher>();
-        this.teacherStudentMapping = new HashMap<String, List<String>>();
+    private Map<String,ArrayList<String>> teacherStudentPair=new HashMap<String, ArrayList<String>>();
+
+
+
+
+    public void add(Student student) {
+        studentData.put(student.getName(),student);
     }
 
-    public void saveStudent(Student student){
-        // your code goes here
+    public void addTeacher(Teacher teacher) {
+        teacherData.put(teacher.getName(),teacher);
+
     }
 
-    public void saveTeacher(Teacher teacher){
-        // your code goes here
+    public void addStudentTeacherPair(String student, String teacher) {
+
+        ArrayList<String> students=teacherStudentPair.getOrDefault(teacher,new ArrayList<String>());
+        students.add(student);
+        teacherStudentPair.put(teacher,students);
+
     }
 
-    public void saveStudentTeacherPair(String student, String teacher){
-        if(studentMap.containsKey(student) && teacherMap.containsKey(teacher)){
-            // your code goes here
+    public Optional<Student> getstudent(String student) {
+        if(studentData.containsKey(student)){
+            return Optional.of(studentData.get(student));
         }
+     return Optional.empty();
     }
 
-    public Student findStudent(String student){
-        // your code goes here
+    public Optional<Teacher> getTeacher(String teacher) {
+        if(teacherData.containsKey(teacher)){
+            return  Optional.of(teacherData.get(teacher));
+        }
+        return Optional.empty();
     }
 
-    public Teacher findTeacher(String teacher){
-        // your code goes here
+
+    public List<String> getStudentByTeacherName(String teacher) {
+       return teacherStudentPair.getOrDefault(teacher,new ArrayList<>());
     }
 
-    public List<String> findStudentsFromTeacher(String teacher){
-        // your code goes here
-        // find student list corresponding to a teacher
+    public List<String> getAllStudent() {
+        return new ArrayList<>(studentData.keySet());
     }
 
-    public List<String> findAllStudents(){
-        // your code goes here
+    public void deleteTeacher(String teacher) {
+        teacherData.remove(teacher);
+        teacherStudentPair.remove(teacher);
     }
 
-    public void deleteTeacher(String teacher){
-        // your code goes here
+    public void deleteStudent(String stud) {
+        studentData.remove(stud);
+
     }
 
-    public void deleteAllTeachers(){
-        // your code goes here
+    public List<String> getAllTeacher() {
+        return new ArrayList<>(teacherData.keySet());
     }
 }
